@@ -56,11 +56,11 @@ The top three scenarios failed. The most serious findings are negative stakes cr
 
 **Layer:** UI  
 **Severity:** Critical  
-**Reproduction:** Double-click Place Bet for a valid selection and stake.  
+**Reproduction:** From a known balance, double-click Place Bet for a valid selection and stake, then reload the page. The reload is required because the displayed balance is stale until then (BUG-07), so the double charge is invisible on screen without it.  
 **Expected:** One accepted placement and one debit.  
-**Actual:** Two requests return `200`, balance falls by two stakes and one receipt is shown.  
+**Actual:** The browser fires two `POST /api/place-bet` requests, both return `200`, the balance falls by two stakes and only one receipt is shown. The submit control keeps its label as "PLACING..." but is never disabled, so the second click is accepted.  
 **Impact:** The customer can be charged twice without seeing two confirmations.  
-**Evidence:** [double-charge state](evidence/BUG-04-double-charge.png); reproduced five times in the original execution.
+**Evidence:** [balance after one double-click](evidence/BUG-04-double-charge.png) — from EUR 120.00, a single EUR 10.00 bet would leave EUR 110.00; the header and bet slip read **EUR 100.00**, so two stakes were debited. Reproduced five times.
 
 ### High
 
@@ -92,7 +92,7 @@ The top three scenarios failed. The most serious findings are negative stakes cr
 **Expected:** Header and bet slip fall by the stake.  
 **Actual:** Both keep the old value until page refresh while the API already holds the reduced balance.  
 **Impact:** The customer makes later staking decisions from an outdated balance.  
-**Evidence:** [stale balance](evidence/BUG-07-stale-balance.png).
+**Evidence:** [receipt open, balance unchanged](evidence/BUG-07-stale-balance.png) — the success receipt for a EUR 10.00 bet is on screen while the header and bet slip still read EUR 120.00; `GET /api/balance` returned 110 at that moment.
 
 ### BUG-08: reset response and persisted balance disagree
 
