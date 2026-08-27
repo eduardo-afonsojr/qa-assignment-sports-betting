@@ -28,7 +28,7 @@ The top three scenarios failed. The most serious findings are negative stakes cr
 **Severity:** Critical  
 **Reproduction:** Place a valid bet with odds other than 2.00 and compare slip and receipt payout.  
 **Expected:** `stake x odds`, consistent with the slip.  
-**Actual:** Receipt uses `stake x 2`. EUR 10.00 at 2.20 displayed EUR 22.00 in the slip and EUR 20.00 in the receipt.  
+**Actual:** Receipt uses `stake x 2`. EUR 10.00 at 2.20 displayed EUR 22.00 in the slip and EUR 20.00 in the receipt. The error runs both ways: at odds 1.35 the receipt over-states (EUR 50.00 shows EUR 100.00 instead of EUR 67.50) and at 6.00 it under-states (EUR 10.00 shows EUR 20.00 instead of EUR 60.00).  
 **Impact:** The customer receipt states a potential return that differs from the price presented before placement.  
 **Evidence:** [receipt examples](evidence/BUG-01-05-06-receipt-modal.png), [odds 1.35](evidence/BUG-01-overstate-odds135.png), [odds 6.00](evidence/BUG-01-understate-odds600.png).
 
