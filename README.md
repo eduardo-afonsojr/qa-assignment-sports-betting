@@ -30,6 +30,8 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
+Set `USER_ID` in `.env` to your own candidate user id. The suite refuses to run while the template placeholder is still in place, so a missing id fails with one clear message instead of an HTTP 401 for every test.
+
 Configure `.env`:
 
 ```ini
@@ -55,6 +57,7 @@ config/              environment-based settings
 pages/               Selenium page objects
 tests/api/           API validation test
 tests/ui/            end-to-end UI test
+tools/               checks the defect report carries every required field
 docs/                plan, execution results, defects and evidence
 .github/workflows/   API test workflow
 ```

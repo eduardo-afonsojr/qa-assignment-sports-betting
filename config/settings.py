@@ -20,6 +20,11 @@ load_dotenv(PROJECT_ROOT / ".env")
 
 _TRUTHY = {"1", "true", "yes", "on"}
 
+#: The value shipped in .env.example. Treated as "not configured" so a reviewer
+#: who copies the template without editing it gets one clear message instead of
+#: an HTTP 401 for every test.
+_PLACEHOLDER_USER_ID = "your-candidate-user-id-here"
+
 
 def _flag(name: str, default: bool) -> bool:
     """Read a boolean environment variable."""
@@ -45,14 +50,15 @@ def load_settings() -> Settings:
     """Build :class:`Settings` from the environment.
 
     Raises:
-        RuntimeError: if ``USER_ID`` is not set. Failing here with a clear
-            message is far friendlier than letting every test fail with a 401.
+        RuntimeError: if ``USER_ID`` is unset or still the template placeholder.
+            Failing here with a clear message is far friendlier than letting
+            every test fail with a 401.
     """
     user_id = os.getenv("USER_ID", "").strip()
-    if not user_id:
+    if not user_id or user_id == _PLACEHOLDER_USER_ID:
         raise RuntimeError(
-            "USER_ID is not set. Copy .env.example to .env and set USER_ID to "
-            "your candidate user id, or export it: USER_ID=<your-id> pytest"
+            "USER_ID is not configured. Set it to your own candidate user id in "
+            ".env, or export it for a single run: USER_ID=<your-id> pytest"
         )
 
     return Settings(

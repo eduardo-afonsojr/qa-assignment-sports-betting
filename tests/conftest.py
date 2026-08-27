@@ -22,6 +22,18 @@ SCREENSHOT_DIR = PROJECT_ROOT / "screenshots"
 _DEGENERATE_ODDS = Decimal("2.00")
 
 
+def pytest_configure(config: pytest.Config) -> None:
+    """Validate configuration once, before any test runs.
+
+    Without this the same misconfiguration surfaces as one error per test.
+    ``UsageError`` prints a single line and stops the run.
+    """
+    try:
+        load_settings()
+    except RuntimeError as exc:
+        raise pytest.UsageError(str(exc)) from exc
+
+
 @pytest.fixture(scope="session")
 def settings() -> Settings:
     """Configuration for the session, read from the environment."""
